@@ -27,16 +27,25 @@ def process_transmit_files_table(url: str):
     
 
 with open("./skyserver-dump.csv", newline="") as file:
-    reader = csv.DictReader(file)
-    urls = [row["url"] for row in reader]
-    hdul = fits.open(urls[1])
-    
-fits_tables = ThreadPool(8).imap_unordered(process_transmit_files_table, urls)
+    try:
+        reader = csv.DictReader(file)
+        urls = [row["url"] for row in reader]
 
-print(hdul["PRIMARY"].header)
+    except Exception as e:
+        print("Process failed")
+
+
+fits_tables = ThreadPool(8).imap_unordered(process_transmit_files_table, urls)
 
 fits_tables = [t for t in fits_tables if t is not None]
 
 final_table = vstack(fits_tables)
 
 final_table.write("final_output.fits", format = "fits", overwrite = True)
+
+print(f"The fits file has been created")
+
+hdul = fits.open("final_output.fits")
+hdul.info()
+print("-------------------------------------------------------")
+print(hdul["COADD"].columns)
