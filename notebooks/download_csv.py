@@ -41,6 +41,10 @@ fits_tables = [t for t in fits_tables if t is not None]
 
 final_table = vstack(fits_tables)
 
+with open("final_output.csv", mode='w', newline='') as file:
+    writer = csv.writer(file)
+    writer.writerows(final_table)
+
 final_table.write("final_output.fits", format = "fits", overwrite = True)
 
 print(f"The fits file has been created")
