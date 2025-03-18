@@ -9,9 +9,9 @@ This particular project involves processing spectrograph data from the Sloan Dig
 The full project proposal can be found [here](./docs/proposal.pdf).
 
 ### Collaborators
-- Aila Choudhary ([GitHub](https://github.com/), [LinkedIn](https://www.linkedin.com/in/aila-choudhary/))
+- Aila Choudhary ([GitHub](https://github.com/ailachoudhary), [LinkedIn](https://www.linkedin.com/in/aila-choudhary/))
 - Simona Isakova ([GitHub](https://github.com/buringskul), [LinkedIn](https://www.linkedin.com/in/simona-isakova/))
-- Ramses Lora ([GitHub](https://github.com/buringskul))
+- Ramses Lora ([GitHub](https://github.com/Nakedkoops))
 - Michael Romashov ([GitHub](https://github.com/MikeRomaa), [LinkedIn](https://www.linkedin.com/in/mikeromaa/))
 
 ## Development
