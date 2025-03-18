@@ -59,20 +59,21 @@ To prove to ourselves that the data from SDSS can be read, and that we can reaso
             'https://dr18.sdss.org/sas/dr18/spectro/sdss/redux/',
             spec.run2d,
             '/spectra/lite/',
-            spec.plate,
+            RIGHT(CONCAT('000', spec.plate), 4),
             '/spec-',
-            spec.plate,
+            RIGHT(CONCAT('000', spec.plate), 4),
             '-',
-            spec.mjd,
+            RIGHT(CONCAT('0000', spec.mjd), 5),
             '-',
             RIGHT(CONCAT('000', spec.fiberID), 4),
             '.fits'
         ) AS url
     FROM SpecObj AS spec
-    -- Filters out any spectra that have known problems
     WHERE
+        -- Filters out any spectra that have known problems
         spec.zWarning = 0 AND
-        spec.class = "STAR"
+        -- Limits our scope to just stars
+        spec.class = 'STAR'
     ORDER BY NEWID()
     ```
 
@@ -85,3 +86,17 @@ To prove to ourselves that the data from SDSS can be read, and that we can reaso
     ```
 
     This meant that for 1 million stellar objects we would be looking at a relatively compact 40 GB—well within reason and easy enough to batch up for processing on a GPU later in the project.
+
+### Implementation
+
+- The first step was to simply get the data into CUDA and do something simple with it. Calculating the temperatures of a few stars seemed like a good starting point.
+
+    The principle behind our algorithm is [Wien's displacement law](https://en.wikipedia.org/wiki/Wien's_displacement_law), which relates the temperature $T$ of a black-body emitter to the strongest wavelength $\lambda_\text{peak}$ emitted from the body:
+
+    $$ \lambda_\text{peak} = \frac{b}{T} $$
+
+    where $b$ is a proportionality constant equal to $28\,980\,000\ \r{A} \cdot K$.
+
+    In [`stargaze.cu`](./src/stargaze.cu), we use NVIDIA's [Thrust](https://nvidia.github.io/cccl/thrust/) library to perform this computation in parallel on several wavelength-series models at the same time. The following is a visualization of the kernel's output implemented in [`temperatures.ipynb`](./notebooks/temperatures.ipynb).
+
+    ![](./docs/temperatures.png)
